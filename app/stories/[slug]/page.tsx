@@ -23,9 +23,9 @@ type StoryViewerProps = {
   params: { slug: string };
 };
 
-export default function StoryViewer({ params }: StoryViewerProps) {
+export default function StoryViewer({ params }: any) {
   const story = stories.find((s) => s.slug === params.slug);
-
+  
   // ❗ no "return" here – Next throws internally
   if (!story) {
     notFound();
