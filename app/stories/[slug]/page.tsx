@@ -10,7 +10,7 @@ import Thumbnails from "yet-another-react-lightbox/plugins/thumbnails";
 import "yet-another-react-lightbox/styles.css";
 import "yet-another-react-lightbox/plugins/captions.css";
 import "yet-another-react-lightbox/plugins/counter.css";
-import "yet-another-react-lightbox/plugins/slideshow.css";
+// import "yet-another-react-lightbox/plugins/slideshow.css";
 import "yet-another-react-lightbox/plugins/thumbnails.css";
 
 import { stories } from "@/data/stories";
