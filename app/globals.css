@@ -8,3 +8,29 @@ body{ @apply bg-zinc-950 text-zinc-100 antialiased; }
 ::selection{ background: rgba(255,255,255,0.18); }
 .yarl__container{ backdrop-filter: blur(10px); }
 .leaflet-container{ width:100%; height:100%; background: rgb(9 9 11); }
+
+/* Prevent page-level horizontal scroll */
+html,
+body {
+  overflow-x: hidden;
+}
+
+/* Featured Collections Strip scrolling */
+.horizontal-scroll {
+  overflow-x: auto;
+  overflow-y: hidden;
+  scroll-behavior: smooth;
+}
+
+.horizontal-scroll::-webkit-scrollbar {
+  display: none;
+}
+.horizontal-scroll {
+  -ms-overflow-style: none;  /* IE / Edge */
+  scrollbar-width: none;     /* Firefox */
+}
+
+html, body {
+  max-width: 100%;
+  overflow-x: hidden;
+}
