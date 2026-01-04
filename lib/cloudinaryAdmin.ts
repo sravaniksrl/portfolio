@@ -171,13 +171,27 @@ cloudinary.config({
   api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
+// export type CloudinaryResource = {
+//   public_id: string;
+//   width: number;
+//   height: number;
+//   created_at?: string;
+//   secure_url?: string;
+//   folder?: string;
+//   context?: any;
+// };
+
 export type CloudinaryResource = {
   public_id: string;
-  width: number;
-  height: number;
-  created_at?: string;
   secure_url?: string;
+  width?: number;
+  height?: number;
+  format?: string;
+  created_at?: string;
+  uploaded_at?: string;
+  tags?: string[];
   folder?: string;
+  filename?: string;
   context?: any;
 };
 
@@ -224,4 +238,93 @@ export async function getLatestImagePublicId(
     | null;
 
   return resource?.public_id ?? null;
+}
+
+
+
+
+
+// Ensure you have these env vars set:
+// CLOUDINARY_CLOUD_NAME
+// CLOUDINARY_API_KEY
+// CLOUDINARY_API_SECRET
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME! || process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME!,
+  api_key: process.env.CLOUDINARY_API_KEY!,
+  api_secret: process.env.CLOUDINARY_API_SECRET!,
+});
+
+
+
+export type JournalEntry = {
+  publicId: string;
+  title: string;
+  description: string;
+  width: number;
+  height: number;
+  imageUrl: string;
+  folder?: string;
+  tags: string[];
+};
+
+function pickContextTitle(ctx: any): string {
+  // Cloudinary UI "Title (caption)" may land in one of these depending on setup.
+  return (
+    ctx?.custom?.caption ||
+    ctx?.caption ||
+    ctx?.custom?.title ||
+    ctx?.title ||
+    ""
+  );
+}
+
+function pickContextDescription(ctx: any): string {
+  // Cloudinary UI "Description (alt)" may land in one of these depending on setup.
+  return (
+    ctx?.custom?.alt ||
+    ctx?.alt ||
+    ctx?.custom?.description ||
+    ctx?.description ||
+    ""
+  );
+}
+
+function fallbackTitleFromPublicId(publicId: string): string {
+  const last = publicId.split("/").pop() || publicId;
+  return last.replace(/[-_]+/g, " ").trim();
+}
+
+/**
+ * Fetch the latest "journal" image (you control this via Cloudinary tag).
+ * Add tag: journal  -> that asset becomes eligible.
+ * Remove tag -> it disappears from "From the Journal".
+ */
+export async function getLatestJournalEntry(): Promise<JournalEntry | null> {
+  const res = await cloudinary.search
+    .expression(`resource_type:image AND tags=journal`)
+    .sort_by("uploaded_at", "desc")
+    .max_results(1)
+    .with_field("context")
+    .with_field("tags")
+    .with_field("image_metadata")
+    .execute();
+
+  const item: CloudinaryResource | undefined = res?.resources?.[0];
+  if (!item) return null;
+
+  const title =
+    pickContextTitle(item.context) || fallbackTitleFromPublicId(item.public_id);
+
+  const description = pickContextDescription(item.context) || "";
+
+  return {
+    publicId: item.public_id,
+    title,
+    description,
+    width: item.width || 1600,
+    height: item.height || 1067,
+    imageUrl: item.secure_url || "",
+    folder: item.folder,
+    tags: item.tags || [],
+  };
 }

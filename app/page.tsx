@@ -417,6 +417,7 @@ import {
   type HighlightStory,
 } from "@/data/highlightStories";
 import { FeaturedCollectionsStrip } from "@/components/FeaturedCollectionsStrip";
+import { FromTheJournal } from "@/components/FromTheJournal";
 
 type HomeCollection = {
   slug: string;
@@ -496,112 +497,7 @@ export default async function HomePage() {
       {/* 1️⃣ Cinematic hero slideshow */}
       {heroSlides.length > 0 && <HeroSlideshow slides={heroSlides} />}
 
-      {/* 2️⃣ Highlight stories – only if Cloudinary returned something */}
-      {primaryHighlight && (
-        <section className="mx-auto max-w-6xl px-4 pb-12 md:pb-16">
-          <Reveal className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
-            <div>
-              <h2 className="text-xl font-semibold tracking-tight text-white md:text-2xl">
-                Highlight stories
-              </h2>
-              <p className="mt-2 max-w-xl text-sm text-zinc-400 md:text-base">
-                Pulled straight from your Cloudinary folders — tweak titles and
-                descriptions in the dashboard and they’ll update here.
-              </p>
-            </div>
-            <Link
-              href="/stories"
-              className="mt-2 text-sm text-zinc-300 hover:text-white md:mt-0"
-            >
-              View all highlights →
-            </Link>
-          </Reveal>
-
-          <div className="mt-6 grid gap-6 md:grid-cols-[minmax(0,2fr),minmax(0,1.4fr)]">
-            {/* Main big highlight card */}
-            <Reveal>
-              <Link
-                href={
-                  primaryHighlight.collection
-                    ? `/portfolio/${primaryHighlight.collection.slug}`
-                    : "/portfolio"
-                }
-                className="group relative overflow-hidden rounded-3xl bg-white/5 ring-1 ring-white/10"
-              >
-                <div className="relative aspect-[16/9] w-full overflow-hidden">
-                  {primaryHighlight.src ? (
-                    <img
-                      src={primaryHighlight.src}
-                      alt={primaryHighlight.story.title}
-                      className="h-full w-full object-cover transition duration-700 group-hover:scale-105"
-                    />
-                  ) : (
-                    <div className="h-full w-full bg-gradient-to-br from-white/10 via-white/5 to-white/0" />
-                  )}
-
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-black/0" />
-
-                  <div className="absolute bottom-0 left-0 right-0 p-6 md:p-8">
-                    <p className="text-xs uppercase tracking-[0.22em] text-zinc-300/80">
-                      Highlight story
-                    </p>
-                    <h3 className="mt-2 text-2xl font-semibold tracking-tight text-white md:text-3xl">
-                      {primaryHighlight.story.title}
-                    </h3>
-                    {primaryHighlight.story.short && (
-                      <p className="mt-2 max-w-xl text-sm text-zinc-200/80 md:text-base">
-                        {primaryHighlight.story.short}
-                      </p>
-                    )}
-                    <span className="mt-4 inline-flex items-center text-xs font-medium text-zinc-100">
-                      View collection →
-                    </span>
-                  </div>
-                </div>
-              </Link>
-            </Reveal>
-
-            {/* Side mini list */}
-            <div className="space-y-3">
-              {restHighlights.map(({ story, collection, src }) => (
-                <Reveal key={story.slug}>
-                  <Link
-                    href={
-                      collection ? `/portfolio/${collection.slug}` : "/portfolio"
-                    }
-                    className="group flex items-center gap-3 rounded-2xl bg-white/3 p-3 ring-1 ring-white/10 transition hover:bg-white/10"
-                  >
-                    <div className="relative h-16 w-20 overflow-hidden rounded-xl">
-                      {src ? (
-                        <img
-                          src={src}
-                          alt={story.title}
-                          className="h-full w-full object-cover transition group-hover:scale-110"
-                        />
-                      ) : (
-                        <div className="h-full w-full bg-gradient-to-br from-white/10 via-white/5 to-white/0" />
-                      )}
-                    </div>
-                    <div className="flex-1">
-                      <p className="text-xs font-semibold text-white">
-                        {story.title}
-                      </p>
-                      {story.short && (
-                        <p className="mt-1 line-clamp-2 text-[11px] text-zinc-400">
-                          {story.short}
-                        </p>
-                      )}
-                      <span className="mt-1 inline-block text-[11px] text-zinc-300 group-hover:text-white">
-                        View collection →
-                      </span>
-                    </div>
-                  </Link>
-                </Reveal>
-              ))}
-            </div>
-          </div>
-        </section>
-      )}
+      <FromTheJournal />
 
       {/* 3️⃣ Featured collections strip with arrows */}
       <section className="mx-auto max-w-6xl px-4 pb-14 md:pb-20">
@@ -628,4 +524,5 @@ export default async function HomePage() {
     </div>
   );
 }
+
 
